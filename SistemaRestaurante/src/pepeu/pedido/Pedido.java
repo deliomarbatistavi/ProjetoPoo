@@ -8,6 +8,7 @@ public class Pedido {
     private String tipoPedido;
     private int numeroMesa;
     private double taxaEntrega;
+    private String enderecoEntrega;
     private Pagamento pagamento;
     private boolean finalizado;
 
@@ -46,6 +47,7 @@ public class Pedido {
         this.tipoPedido = tipoPedido;
         numeroMesa = 0;
         taxaEntrega = 0;
+        enderecoEntrega = null;
     }
 
     public int getNumeroMesa() { return numeroMesa; }
@@ -62,6 +64,15 @@ public class Pedido {
         if (!"Delivery".equals(tipoPedido) || !Double.isFinite(taxaEntrega) || taxaEntrega < 0)
             throw new IllegalArgumentException("Informe uma taxa de entrega válida.");
         this.taxaEntrega = taxaEntrega;
+    }
+
+    public String getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public void setEnderecoEntrega(String enderecoEntrega) {
+        verificarAberto();
+        this.enderecoEntrega = enderecoEntrega;
     }
 
     public double getTotal() {
