@@ -15,7 +15,7 @@ public class Pedido {
     public void adicionarItem(ItemPedido item) {
         verificarAberto();
         if (item == null) throw new IllegalArgumentException("Informe um item.");
-        itens.add(copiarItem(item));
+        itens.add(item);
     }
 
     public void removerItem(int indice) {
@@ -24,9 +24,7 @@ public class Pedido {
     }
 
     public ArrayList<ItemPedido> getItens() {
-        ArrayList<ItemPedido> copia = new ArrayList<>();
-        for (ItemPedido item : itens) copia.add(copiarItem(item));
-        return copia;
+        return new ArrayList<>(itens);
     }
 
     public int calcularQuantidadeItens() {
@@ -74,9 +72,7 @@ public class Pedido {
 
     public void setEnderecoEntrega(String enderecoEntrega) {
         verificarAberto();
-        if (!"Delivery".equals(tipoPedido) || enderecoEntrega == null || enderecoEntrega.trim().isEmpty())
-            throw new IllegalArgumentException("Informe um endereço de entrega válido.");
-        this.enderecoEntrega = enderecoEntrega.trim();
+        this.enderecoEntrega = enderecoEntrega;
     }
 
     public double getTotal() {
@@ -93,12 +89,7 @@ public class Pedido {
         return calcularSubtotal() + taxaEntrega;
     }
 
-    public Pagamento getPagamento() {
-        if (pagamento == null) return null;
-        Pagamento copia = new Pagamento(pagamento.getTipoPagamento(), pagamento.getValorRecebido());
-        if ("Dinheiro".equals(pagamento.getTipoPagamento())) copia.calcularTroco(calcularTotal());
-        return copia;
-    }
+    public Pagamento getPagamento() { return pagamento; }
     public String getFormaPagamento() { return pagamento == null ? null : pagamento.getTipoPagamento(); }
     public double getValorRecebido() { return pagamento == null ? 0 : pagamento.getValorRecebido(); }
     public boolean isFinalizado() { return finalizado; }
@@ -122,9 +113,5 @@ public class Pedido {
 
     private void verificarAberto() {
         if (finalizado) throw new IllegalStateException("O pedido já foi finalizado.");
-    }
-
-    private ItemPedido copiarItem(ItemPedido item) {
-        return new ItemPedido(item.getNome(), item.getPreco(), item.getQuantidade(), item.getObservacao());
     }
 }
