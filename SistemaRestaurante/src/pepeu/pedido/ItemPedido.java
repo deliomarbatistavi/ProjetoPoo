@@ -8,10 +8,10 @@ public class ItemPedido {
     private String observacao;
 
     public ItemPedido(String nome, double preco, int quantidade, String observacao) {
-        this.nome = nome;
-        this.preco = preco;
-        this.quantidade = quantidade;
-        this.observacao = observacao;
+        setNome(nome);
+        setPreco(preco);
+        setQuantidade(quantidade);
+        setObservacao(observacao);
     }
     public String getNome() {
         return nome;
@@ -29,14 +29,20 @@ public class ItemPedido {
         return observacao;
     }
     public void setNome(String nome) {
-        this.nome = nome;
+        if (nome == null || nome.trim().isEmpty())
+            throw new IllegalArgumentException("Informe o nome do item.");
+        this.nome = nome.trim();
     }
 
     public void setPreco(double preco) {
+        if (!Double.isFinite(preco) || preco < 0)
+            throw new IllegalArgumentException("Informe um preço válido.");
         this.preco = preco;
     }
 
     public void setQuantidade(int quantidade) {
+        if (quantidade <= 0)
+            throw new IllegalArgumentException("Informe uma quantidade válida.");
         this.quantidade = quantidade;
     }
 
