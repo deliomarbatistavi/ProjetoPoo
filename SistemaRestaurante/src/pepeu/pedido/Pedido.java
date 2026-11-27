@@ -15,7 +15,8 @@ public class Pedido {
     public void adicionarItem(ItemPedido item) {
         verificarAberto();
         if (item == null) throw new IllegalArgumentException("Informe um item.");
-        itens.add(item);
+        validarItem(item);
+        itens.add(copiarItem(item));
     }
 
     public void removerItem(int indice) {
@@ -24,7 +25,11 @@ public class Pedido {
     }
 
     public ArrayList<ItemPedido> getItens() {
-        return new ArrayList<>(itens);
+        ArrayList<ItemPedido> copia = new ArrayList<>();
+        for (ItemPedido item : itens) {
+            copia.add(copiarItem(item));
+        }
+        return copia;
     }
 
     public int calcularQuantidadeItens() {
@@ -72,7 +77,10 @@ public class Pedido {
 
     public void setEnderecoEntrega(String enderecoEntrega) {
         verificarAberto();
-        this.enderecoEntrega = enderecoEntrega;
+        if (!"Delivery".equals(tipoPedido) || enderecoEntrega == null || enderecoEntrega.trim().isEmpty()) {
+            throw new IllegalArgumentException("Informe um endereço de entrega válido.");
+        }
+        this.enderecoEntrega = enderecoEntrega.trim();
     }
 
     public double getTotal() {
@@ -101,6 +109,8 @@ public class Pedido {
         verificarAberto();
         if (tipoPedido == null || ("Mesa".equals(tipoPedido) && numeroMesa == 0))
             throw new IllegalStateException("Informe o tipo do pedido e o número da mesa, se necessário.");
+        if ("Delivery".equals(tipoPedido) && (enderecoEntrega == null || enderecoEntrega.isEmpty()))
+            throw new IllegalStateException("Informe o endereço de entrega.");
         if (itens.isEmpty()) throw new IllegalStateException("Adicione pelo menos um item.");
         if (!"Dinheiro".equals(formaPagamento) && !"Pix".equals(formaPagamento) && !"Cartão".equals(formaPagamento))
             throw new IllegalArgumentException("Forma de pagamento inválida.");
@@ -113,5 +123,18 @@ public class Pedido {
 
     private void verificarAberto() {
         if (finalizado) throw new IllegalStateException("O pedido já foi finalizado.");
+    }
+
+    private void validarItem(ItemPedido item) {
+        if (item.getNome() == null || item.getNome().trim().isEmpty())
+            throw new IllegalArgumentException("Informe o nome do item.");
+        if (!Double.isFinite(item.getPreco()) || item.getPreco() < 0)
+            throw new IllegalArgumentException("Informe um preço válido.");
+        if (item.getQuantidade() <= 0)
+            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
+    }
+
+    private ItemPedido copiarItem(ItemPedido item) {
+        return new ItemPedido(item.getNome(), item.getPreco(), item.getQuantidade(), item.getObservacao());
     }
 }
