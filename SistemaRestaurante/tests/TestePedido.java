@@ -28,7 +28,6 @@ public class TestePedido {
         conferir(pedido.calcularQuantidadeItens() == 2 && pedido.calcularSubtotal() == 40);
         pedido.setTipoPedido("Delivery");
         pedido.setTaxaEntrega(5);
-        deveFalhar(() -> pedido.finalizar("Dinheiro", 50));
         pedido.setEnderecoEntrega(" Rua A, 10 ");
         deveFalhar(() -> pedido.finalizar("Dinheiro", 44));
         pedido.finalizar("Dinheiro", 50);
@@ -45,6 +44,12 @@ public class TestePedido {
         mesa.setNumeroMesa(3);
         mesa.finalizar("Pix", 0);
         conferir(mesa.isFinalizado() && mesa.getTroco() == 0);
+        Pedido entrega = new Pedido();
+        entrega.setTipoPedido("Delivery");
+        entrega.setTaxaEntrega(2);
+        entrega.adicionarItem(new ItemPedido("Suco", 8, 1, ""));
+        entrega.finalizar("Cartão", 0);
+        conferir(entrega.getTotal() == 10 && entrega.isFinalizado());
         System.out.println("Testes de pedido passaram.");
     }
 }

@@ -110,8 +110,6 @@ public class Pedido {
         verificarAberto();
         if (tipoPedido == null || ("Mesa".equals(tipoPedido) && numeroMesa == 0))
             throw new IllegalStateException("Informe o tipo do pedido e o número da mesa, se necessário.");
-        if ("Delivery".equals(tipoPedido) && enderecoEntrega == null)
-            throw new IllegalStateException("Informe o endereço de entrega.");
         if (itens.isEmpty()) throw new IllegalStateException("Adicione pelo menos um item.");
         if (!"Dinheiro".equals(formaPagamento) && !"Pix".equals(formaPagamento) && !"Cartão".equals(formaPagamento))
             throw new IllegalArgumentException("Forma de pagamento inválida.");
